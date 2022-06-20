@@ -22,6 +22,8 @@ import {DialogModule} from 'primeng/dialog';
 import {TabViewModule} from 'primeng/tabview';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserComponent } from './components/user/user.component';
+import {CardModule} from 'primeng/card';
+import {FieldsetModule} from 'primeng/fieldset';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { UserComponent } from './components/user/user.component';
     TableModule,
     DialogModule,
     TabViewModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    CardModule,
+    FieldsetModule
   ],
   providers: [AuthService, SessionService, authInterceptorProviders, AppuserService, OrderService],
   bootstrap: [AppComponent]
