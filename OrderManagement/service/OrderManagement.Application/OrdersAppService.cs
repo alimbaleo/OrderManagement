@@ -18,9 +18,9 @@ namespace OrderManagement.Application
         private readonly ICurrentUserInfo _currentUserInfo;
         private readonly ILogger<OrdersAppService> _logger;
 
-        public OrdersAppService(IOrdersRepository playerRepository, IOrdersService ordersService, IMapper mapper, ICurrentUserInfo currentUserInfo, ILogger<OrdersAppService> logger)
+        public OrdersAppService(IOrdersRepository orderRepository, IOrdersService ordersService, IMapper mapper, ICurrentUserInfo currentUserInfo, ILogger<OrdersAppService> logger)
         {
-            _ordersRepository = playerRepository;
+            _ordersRepository = orderRepository;
             _orderService = ordersService;
             _mapper = mapper;
             _currentUserInfo = currentUserInfo;
