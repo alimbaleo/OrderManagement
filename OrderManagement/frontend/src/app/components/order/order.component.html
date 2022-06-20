@@ -1,0 +1,204 @@
+<p-dialog [(visible)]="display" [style]="{width: '50vw'}">
+    <ng-template pTemplate="header">
+       Register Order
+    </ng-template>
+    <div class="col-md-12">
+        <div class="card card-container">
+          <form
+            name="form"
+            (ngSubmit)="f.form.valid && onSubmit()"
+            #f="ngForm"
+            novalidate
+          >
+            <div class="form-group" >
+              <input
+                type="text"
+                pInputText
+                placeholder="Product Name"
+                class="form-control"
+                name="productName"
+                [(ngModel)]="form.productName"
+                required                
+                #productName="ngModel"
+              />
+              <div
+                class="alert alert-danger"
+                role="alert"
+                *ngIf="productName.errors && f.submitted"
+              >
+                Product is required!
+              </div>
+            </div>
+            <div class="form-group" >
+                <input
+                  type="text"
+                  pInputText
+                  placeholder="Order Number"
+                  class="form-control"
+                  name="orderNo"
+                  [(ngModel)]="form.orderNo"
+                  required                
+                  #orderNo="ngModel"
+                />
+                <div
+                  class="alert alert-danger"
+                  role="alert"
+                  *ngIf="orderNo.errors && f.submitted"
+                >
+                  Order Number is required!
+                </div>
+              </div> 
+              
+            <div class="form-group" >
+                <input
+                  type="date"
+                  pInputText
+                  placeholder="Order Date"
+                  class="form-control"
+                  name="orderDate"
+                  [(ngModel)]="form.orderDate"
+                  required                
+                  #orderDate="ngModel"
+                />
+                <div
+                  class="alert alert-danger"
+                  role="alert"
+                  *ngIf="orderDate.errors && f.submitted"
+                >
+                  Order Date is required!
+                </div>
+              </div>              
+
+              <div class="form-group" >
+                <input
+                  type="number"
+                  pInputText
+                  placeholder="Price"
+                  class="form-control"
+                  name="price"
+                  [(ngModel)]="form.price"
+                  required                
+                  #price="ngModel"
+                />
+                <div
+                  class="alert alert-danger"
+                  role="alert"
+                  *ngIf="price.errors && f.submitted"
+                >
+                  Price is required!
+                </div>
+              </div> 
+              <div class="form-group" >
+                <input
+                  type="number"
+                  pInputText
+                  placeholder="Total Price"
+                  class="form-control"
+                  name="total"
+                  [(ngModel)]="form.total"
+                  required                
+                  #total="ngModel"
+                />
+                <div
+                  class="alert alert-danger"
+                  role="alert"
+                  *ngIf="total.errors && f.submitted"
+                >
+                  Total Price is required!
+                </div>
+              </div> 
+              
+        <div class="form-group">
+            <button class="btn btn-primary btn-block" pButton>
+              Save
+            </button>
+          </div>
+          <div class="form-group">
+            <div
+              class="alert alert-danger"
+              role="alert"
+              *ngIf="f.submitted && hasError"
+            >
+              Could not create order: {{ errorMessage }}
+            </div>
+          </div>
+          </form>
+        </div>
+      </div>
+    <ng-template pTemplate="footer">
+        
+    </ng-template>
+</p-dialog>
+
+<p-button type="button" (click)="displayOrderForm()" icon="pi pi-external-link" label="Register Order"></p-button>
+
+<p-table #dt [value]="orders" dataKey="id" styleClass="p-datatable-customers" [rowHover]="true"
+    [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" responsiveLayout="scroll"
+    [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+    <ng-template pTemplate="caption">
+        <div class="table-header">
+            List of Orders
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="productName">
+                <div class="flex justify-content-between align-items-center">
+                    product
+                    <p-sortIcon field="productName"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="order">
+                <div class="flex justify-content-between align-items-center">
+                    Order Number
+                    <p-sortIcon field="orderNo"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="orderDate">
+                <div class="flex justify-content-between align-items-center">
+                    Date
+                    <p-sortIcon field="orderDate"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="price">
+                <div class="flex justify-content-between align-items-center">
+                    price
+                </div>
+            </th>
+            <th pSortableColumn="total">
+                <div class="flex justify-content-between align-items-center">
+                    total
+                </div>
+            </th>
+            
+            <th style="width: 8rem"></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-order>
+        <tr class="p-selectable-row">
+            <td>
+                <span class="p-column-title">product</span>
+                {{order.productName}}
+            </td>
+            <td>
+                <span class="p-column-title">order Number</span>
+                {{order.orderNo}}
+            </td>
+            <td>
+                <span class="p-column-title">Order date</span>
+                {{order.orderDate | date: 'dd/MM/yyyy'}}
+            </td>
+            <td>
+                {{order.price | currency:'USD':'symbol'}}
+            </td>
+            <td>
+                {{order.total | currency:'USD':'symbol'}}
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td colspan="8">No orders found.</td>
+        </tr>
+    </ng-template>
+</p-table>
