@@ -16,9 +16,12 @@ using OrderManagement.EntityFramework;
 using OrderManagement.EntityFramework.Identity;
 using System.Text;
 using OrderManagement.Application.Contract.AppUsers;
+using Serilog.Context;
+using Serilog.Enrichers.AspNetCore.HttpContext;
+using Serilog.Core.Enrichers;
 
 var builder = WebApplication.CreateBuilder(args);
-
+const string REQUEST_ID = "request-id";
 // Add services to the container.
 
 //AppServices
@@ -47,7 +50,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(jsonOptions =>
     jsonOptions.SerializerSettings.ReferenceLoopHandling =
             Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 });
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
@@ -128,13 +131,29 @@ builder.Services.AddCors(options =>
     });
 });
 
+LoggerConfiguration loggerConfiguration = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration);
+loggerConfiguration.Enrich.FromLogContext();
+Log.Logger = loggerConfiguration.CreateLogger();
 
-builder.Host.UseSerilog((c, l) =>
-{
-    l.WriteTo.Console();
-});
-
+builder.Services.AddLogging(builder => builder.ClearProviders().AddSerilog(dispose: true));
 var app = builder.Build();
+app.UseSerilogLogContext(options =>
+{
+    options.EnrichersForContextFactory = httpContext =>
+    {
+        var result = new List<PropertyEnricher>();
+        if (httpContext?.Request?.Headers != null && httpContext.Request.Headers.ContainsKey(REQUEST_ID))
+        {
+            var requestId = httpContext.Request.Headers[REQUEST_ID];
+            result.Add(new PropertyEnricher("req", $"{REQUEST_ID}: {requestId}"));
+        }
+        else
+        {
+            result.Add(new PropertyEnricher("req", ""));
+        }
+        return result;
+    };
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -153,5 +172,4 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.Run();
