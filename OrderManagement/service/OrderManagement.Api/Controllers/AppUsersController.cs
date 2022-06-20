@@ -19,7 +19,7 @@ namespace OrderManagement.Api.Controllers
 
         [HttpGet]
         [Route("GetList")]
-        public async Task<ActionResult<ResponseDto<OrdersDto>>> GetPlayer()
+        public async Task<ActionResult<ResponseDto<OrdersDto>>> GetUser()
         {
             var result = await _appUsersAppService.GetAppUsers();
             return StatusCode(result.ResponseCode, result);
