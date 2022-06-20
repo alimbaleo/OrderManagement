@@ -20,10 +20,11 @@ namespace OrderManagement.EntityFramework
         {
             base.OnModelCreating(builder);
 
+            var adminUser = GetDefaultAdminUser();
             builder.Entity<AppUser>(b =>
             {
                 b.ToTable("AppUsers");
-                b.HasData(GetDefaultAdminUser());
+                b.HasData(adminUser);
             });
 
             builder.Entity<IdentityRole>(i =>
@@ -33,10 +34,15 @@ namespace OrderManagement.EntityFramework
             });
 
             //set user role to admin
-            builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+            var userRole = new IdentityUserRole<string>
             {
                 RoleId = ADMIN_ROLE,
                 UserId = DEFAULT_ADMIN_EMAIL
+            };
+            builder.Entity<IdentityUserRole<string>>(i =>
+            {
+                i.ToTable("UserRoles");
+                i.HasData(userRole);
             });
         }
         private AppUser GetDefaultAdminUser()
@@ -45,11 +51,14 @@ namespace OrderManagement.EntityFramework
             {
                 Id = DEFAULT_ADMIN_EMAIL,
                 Email = DEFAULT_ADMIN_EMAIL,
+                UserName = DEFAULT_ADMIN_EMAIL,
                 EmailConfirmed = true,
                 FirstName = "Admin",
                 Surname = "Admin",
-                UserName = DEFAULT_ADMIN_EMAIL,
-            NormalizedUserName = DEFAULT_ADMIN_EMAIL.ToUpper()
+                NormalizedUserName = DEFAULT_ADMIN_EMAIL.ToUpper(),
+                NormalizedEmail = DEFAULT_ADMIN_EMAIL.ToUpper(),
+                ConcurrencyStamp = Guid.NewGuid().ToString()
+
             };
 
             //set user password

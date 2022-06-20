@@ -33,6 +33,10 @@ export class RegisterComponent implements OnInit {
       data => {
         console.log(data);
         this.isSuccessful = true;
+        let resp = data.data;
+        this.sessionService.saveAuthToken(resp.token, resp.expiration);
+        this.sessionService.saveUser(resp);
+        window.location.replace('/');
       },
       err => {
         this.errorMessage = err.error.errorMessage;

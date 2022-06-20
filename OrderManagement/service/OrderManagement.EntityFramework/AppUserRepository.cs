@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using OrderManagement.EntityFramework.Identity;
+using static OrderManagement.Domain.Constants;
 
 namespace OrderManagement.EntityFramework
 {
@@ -20,5 +22,7 @@ namespace OrderManagement.EntityFramework
         {
             return await _OrderManagementDBContext.AppUsers.AnyAsync(x => x.Id == email.ToLower());
         }
+
+       
     }
 }

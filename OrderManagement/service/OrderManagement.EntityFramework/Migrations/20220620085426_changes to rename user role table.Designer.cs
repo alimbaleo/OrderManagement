@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderManagement.EntityFramework;
 
@@ -11,9 +12,10 @@ using OrderManagement.EntityFramework;
 namespace OrderManagement.EntityFramework.Migrations
 {
     [DbContext(typeof(OrderManagementDBContext))]
-    partial class OrderManagementDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220620085426_changes to rename user role table")]
+    partial class changestorenameuserroletable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

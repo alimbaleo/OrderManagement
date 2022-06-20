@@ -89,6 +89,8 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.User.RequireUniqueEmail = true;
+    options.User.AllowedUserNameCharacters =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
 });
 
 builder.Services.AddAuthentication(options =>
@@ -125,6 +127,7 @@ builder.Services.AddCors(options =>
         options.AllowAnyMethod();
     });
 });
+
 
 builder.Host.UseSerilog((c, l) =>
 {
