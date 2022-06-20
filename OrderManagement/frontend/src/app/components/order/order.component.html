@@ -10,11 +10,11 @@
             #f="ngForm"
             novalidate
           >
+          <label for="productName">Product Name</label>
             <div class="form-group" >
               <input
                 type="text"
                 pInputText
-                placeholder="Product Name"
                 class="form-control"
                 name="productName"
                 [(ngModel)]="form.productName"
@@ -30,10 +30,10 @@
               </div>
             </div>
             <div class="form-group" >
+              <label for="orderNo">Order Number</label>
                 <input
                   type="text"
                   pInputText
-                  placeholder="Order Number"
                   class="form-control"
                   name="orderNo"
                   [(ngModel)]="form.orderNo"
@@ -50,10 +50,10 @@
               </div> 
               
             <div class="form-group" >
+              <label for="orderDate">Order Date</label>
                 <input
                   type="date"
                   pInputText
-                  placeholder="Order Date"
                   class="form-control"
                   name="orderDate"
                   [(ngModel)]="form.orderDate"
@@ -70,10 +70,10 @@
               </div>              
 
               <div class="form-group" >
+                <label for="price">Price</label>
                 <input
                   type="number"
                   pInputText
-                  placeholder="Price"
                   class="form-control"
                   name="price"
                   [(ngModel)]="form.price"
@@ -89,10 +89,10 @@
                 </div>
               </div> 
               <div class="form-group" >
+                <label for="total">Total Price</label>
                 <input
                   type="number"
                   pInputText
-                  placeholder="Total Price"
                   class="form-control"
                   name="total"
                   [(ngModel)]="form.total"
@@ -171,7 +171,6 @@
                 </div>
             </th>
             
-            <th style="width: 8rem"></th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-order>
