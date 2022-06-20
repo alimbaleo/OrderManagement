@@ -21,10 +21,11 @@ import { OrderService } from './services/order.service';
 import {DialogModule} from 'primeng/dialog';
 import {TabViewModule} from 'primeng/tabview';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { UserComponent } from './components/user/user.component';
 
 @NgModule({
   declarations: [
-    AppComponent, RegisterComponent, LoginComponent, OrderComponent
+    AppComponent, RegisterComponent, LoginComponent, OrderComponent, UserComponent
   ],
   imports: [
     BrowserModule,

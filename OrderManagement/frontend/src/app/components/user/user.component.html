@@ -1,3 +1,178 @@
-<p>
-  user works!
-</p>
+<p-dialog [(visible)]="display" [style]="{width: '50vw'}">
+  <ng-template pTemplate="header">
+     Register Admin User
+  </ng-template>
+  <div class="col-md-12">
+    <div class="card card-container">
+      
+      <form
+        *ngIf="hasError"
+        name="form"
+        (ngSubmit)="f.form.valid && onSubmit()"
+        #f="ngForm"
+        novalidate
+      >
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input
+            type="text"
+            class="form-control"
+            name="firstName"
+            [(ngModel)]="form.firstName"
+            required
+            minlength="3"
+            maxlength="20"
+            #firstName="ngModel"
+            pInputText
+          />
+          <div class="alert-danger" *ngIf="firstName.errors && f.submitted">
+            <div *ngIf="firstName.errors['required']">First is required</div>
+            <div *ngIf="firstName.errors['minlength']">
+              First Name must be at least 2 characters
+            </div>
+            <div *ngIf="firstName.errors['maxlength']">
+              First Name must be at most 20 characters
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="surname">Surname</label>
+          <input
+            type="text"
+            class="form-control"
+            name="surname"
+            [(ngModel)]="form.surname"
+            required
+            minlength="3"
+            maxlength="20"
+            #surname="ngModel"
+            pInputText
+          />
+          <div class="alert-danger" *ngIf="surname.errors && f.submitted">
+            <div *ngIf="surname.errors['required']">First is required</div>
+            <div *ngIf="surname.errors['minlength']">
+              Surname must be at least 2 characters
+            </div>
+            <div *ngIf="surname.errors['maxlength']">
+              Surname must be at most 20 characters
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            name="email"
+            [(ngModel)]="form.email"
+            required
+            email
+            #email="ngModel"
+            pInputText
+          />
+          <div class="alert-danger" *ngIf="email.errors && f.submitted">
+            <div *ngIf="email.errors['required']">Email is required</div>
+            <div *ngIf="email.errors['email']">
+              Email must be a valid email address
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            name="password"
+            [(ngModel)]="form.password"
+            required
+            minlength="6"
+            #password="ngModel"
+            pInputText
+          />
+          <div class="alert-danger" *ngIf="password.errors && f.submitted">
+            <div *ngIf="password.errors['required']">Password is required</div>
+            <div *ngIf="password.errors['minlength']">
+              Password must be at least 6 characters
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-primary btn-block" pButton>Sign Up</button>
+        </div>
+        <div class="alert alert-warning" *ngIf="f.submitted && hasError">
+          Signup failed!<br />{{ errorMessage }}
+        </div>
+      </form>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+      
+  </ng-template>
+</p-dialog>
+
+<p-button type="button" (click)="displayRegisterUserForm()" icon="pi pi-external-link" label="Add Admin User"></p-button>
+
+<p-table #dt [value]="users" dataKey="id" styleClass="p-datatable-customers" [rowHover]="true"
+  [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [loading]="loading" responsiveLayout="scroll"
+  [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+  <ng-template pTemplate="caption">
+      <div class="table-header">
+          List of Users
+      </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+      <tr>
+          <th pSortableColumn="firstName">
+              <div class="flex justify-content-between align-items-center">
+                  First name
+                  <p-sortIcon field="firstName"></p-sortIcon>
+              </div>
+          </th>
+          <th pSortableColumn="surname">
+              <div class="flex justify-content-between align-items-center">
+                  Surname
+                  <p-sortIcon field="surname"></p-sortIcon>
+              </div>
+          </th>
+          <th pSortableColumn="email">
+              <div class="flex justify-content-between align-items-center">
+                  Email
+                  <p-sortIcon field="email"></p-sortIcon>
+              </div>
+          </th>
+          <th pSortableColumn="role">
+              <div class="flex justify-content-between align-items-center">
+                  Role
+                  <p-sortIcon field="role"></p-sortIcon>
+              </div>
+          </th>
+          
+          <th style="width: 8rem"></th>
+      </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-user>
+      <tr class="p-selectable-row">
+          <td>
+              <span class="p-column-title">First Name</span>
+              {{user.firstName}}
+          </td>
+          <td>
+              <span class="p-column-title">Surname</span>
+              {{user.surname}}
+          </td>
+          <td>
+              <span class="p-column-title">Email</span>
+              {{user.email}}
+          </td>
+          <td>
+              <span class="p-column-title">Role</span>
+              {{user.role}}
+          </td>
+      </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+      <tr>
+          <td colspan="8">No users found.</td>
+      </tr>
+  </ng-template>
+</p-table>

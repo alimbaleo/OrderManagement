@@ -26,7 +26,6 @@ getOrders(skip = 0, take = 10, email ='') : Observable<any>{
 
 }
 register(order: Order) : Observable<any>{
-  debugger;
   return this.httpClient.post(accountsRootUrl + 'register', order, options);
 
 }
