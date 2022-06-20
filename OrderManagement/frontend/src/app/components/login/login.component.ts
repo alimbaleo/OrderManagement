@@ -21,6 +21,7 @@ isLoggedIn = false;
   ngOnInit() {
     if (this.sessionService.getAuthToken()) {
       this.isLoggedIn = true;
+      window.location.replace('/');
       //this.role = this.sessionService.getUser()?.role ?? '';
     }
   }

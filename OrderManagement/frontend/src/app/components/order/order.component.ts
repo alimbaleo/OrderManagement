@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Order } from 'src/app/models/order';
 import { OrderService } from 'src/app/services/order.service';
+import { SessionService } from 'src/app/services/session.service';
 
 @Component({
   selector: 'app-order',
@@ -23,9 +24,12 @@ totalPrice: 0
   display: boolean = false;
   hasError: boolean = false;
   errorMessage = '';
-  constructor(private orderService: OrderService) { }
+  constructor(private orderService: OrderService, private sessionService: SessionService) { }
 
   ngOnInit() {
+    if (!this.sessionService.getAuthToken()) {
+      window.location.replace('/login');
+    }
       this.orderService.getOrders().subscribe(
         data => {
           console.log(data);

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/models/User';
 import { AuthService } from 'src/app/services/auth.service';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { SessionService } from 'src/app/services/session.service';
 
 @Component({
   selector: 'app-register',
@@ -20,9 +21,12 @@ export class RegisterComponent implements OnInit {
   isSuccessful = false;
   errorMessage = '';
   isSignUpFailed = false;
-  constructor(private authservice: AuthService) { }
+  constructor(private authservice: AuthService, private sessionService: SessionService) { }
 
   ngOnInit() {
+    if (this.sessionService.getAuthToken()) {
+      window.location.replace('/');
+    }
   }
   onSubmit(): void {
     this.authservice.register(this.form).subscribe(
