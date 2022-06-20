@@ -46,7 +46,7 @@ surname: ''
     );
   }
   onSubmit(): void {
-    this.appUserService.register(this.form).subscribe(
+    this.appUserService.addAdminUser(this.form).subscribe(
       data => {
         this.hasError = false;
         console.log(data);
