@@ -2,7 +2,7 @@
   <nav class="navbar navbar-expand navbar-dark bg-dark">
     <ul class="navbar-nav mr-auto" routerLinkActive="active">
       <li class="nav-item">
-        <a href="/home" class="nav-link" routerLink="home">Home </a>
+        <a href="/home" class="nav-link" routerLink="home" *ngIf="isLoggedIn">Home </a>
       </li>
       <li class="nav-item" *ngIf="isAdmin">
         <a href="/user" class="nav-link" routerLink="user" *ngIf="isLoggedIn">Users</a>
