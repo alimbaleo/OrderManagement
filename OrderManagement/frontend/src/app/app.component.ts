@@ -21,4 +21,8 @@ export class AppComponent implements OnInit {
       this.username = user?.email ?? '';
     }
   }
+  logout(){
+    this.sessionService.signOut();
+    window.location.reload();
+  }
 }
