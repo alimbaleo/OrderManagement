@@ -38,6 +38,27 @@ namespace OrderManagement.Api.Controllers
             }
 
         }
+        [HttpPost]
+        [Route("AddAdminUser")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto<string>>> AddAdminUser([FromBody] CreateUserDto createUserDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _accountAppService.AddAdminUser(createUserDto);
+                if (result.Status == false)
+                    return StatusCode(result.ResponseCode, result);
+
+                return Ok(result);
+
+            }
+            else
+            {
+
+                return StatusCode(400, string.Join(" ", ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage)));
+            }
+
+        }
 
         [HttpPost]
         [Route("Login")]

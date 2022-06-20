@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.Text;
 using static OrderManagement.Domain.Exceptions.ErrorCodes;
 using static OrderManagement.Domain.Constants;
+using OrderManagement.Application.Helpers;
 
 namespace OrderManagement.Application
 {
@@ -19,13 +20,14 @@ namespace OrderManagement.Application
         private readonly IConfiguration _configuration;
         private readonly IAppUserRepository _userRepository;
         private readonly ILogger<AccountsAppService> _logger;
-
-        public AccountsAppService(UserManager<AppUser> userManager, IConfiguration configuration, IAppUserRepository userRepository, ILogger<AccountsAppService> logger)
+        private readonly ICurrentUserInfo _currentUserInfo;
+        public AccountsAppService(UserManager<AppUser> userManager, IConfiguration configuration, IAppUserRepository userRepository, ILogger<AccountsAppService> logger, ICurrentUserInfo currentUserInfo)
         {
             _userManager = userManager;
             _configuration = configuration;
             _userRepository = userRepository;
             _logger = logger;
+            _currentUserInfo = currentUserInfo;
         }
 
         public async Task<ResponseDto<LoginResponseDto>> LoginAsync(LoginDto loginDto)
@@ -59,25 +61,10 @@ namespace OrderManagement.Application
             {
 
 
-                var userExist = await _userRepository.UserExists(createUserDto.Email);
-                if (userExist)
-                    return new ResponseDto<LoginResponseDto>("A user with the email specified already exists", CONFLICT);
-
-                AppUser user = new()
+                var (user, isSuccessful, message, code ) = await RegisterUser(createUserDto);
+                if (!isSuccessful)
                 {
-                    Email = createUserDto.Email.ToLower(),
-                    SecurityStamp = Guid.NewGuid().ToString(),
-                    UserName = createUserDto.Email,
-                    FirstName = createUserDto.FirstName,
-                    Surname = createUserDto.Surname,
-                    Id = createUserDto.Email.ToLower()
-                };
-
-                var result = await _userManager.CreateAsync(user, createUserDto.Password);
-                if (!result.Succeeded)
-                {
-                    var errorAndCode = GetError(result.Errors);
-                    return new ResponseDto<LoginResponseDto>(errorAndCode.errors, errorAndCode.code);
+                    return new ResponseDto<LoginResponseDto>(message, code);
                 }
                 await _userManager.AddToRoleAsync(user, USER_ROLE);
 
@@ -90,7 +77,31 @@ namespace OrderManagement.Application
             }
         }
 
+        private async Task<(AppUser user, bool wasSuccessful, string message, int code)> RegisterUser(CreateUserDto createUserDto)
+        {
+            var userExist = await _userRepository.UserExists(createUserDto.Email);
+            if (userExist)
+                return (null, false, "A user with the email specified already exists", CONFLICT);
 
+            AppUser user = new()
+            {
+                Email = createUserDto.Email.ToLower(),
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = createUserDto.Email,
+                FirstName = createUserDto.FirstName,
+                Surname = createUserDto.Surname,
+                Id = createUserDto.Email.ToLower()
+            };
+
+            var result = await _userManager.CreateAsync(user, createUserDto.Password);
+            if (!result.Succeeded)
+            {
+                var errorAndCode = GetError(result.Errors);
+                return (null, false, errorAndCode.errors, errorAndCode.code);
+            }
+
+            return (user, true, string.Empty, 200);
+        }
 
         private (string errors, int code) GetError(IEnumerable<IdentityError> identityErrors)
         {
@@ -128,9 +139,31 @@ namespace OrderManagement.Application
             return new LoginResponseDto(new JwtSecurityTokenHandler().WriteToken(token), role, firstName, surname, email, token.ValidTo);
         }
 
-        public Task<ResponseDto<string>> AddAdminUser(CreateUserDto registerDto)
+        public async Task<ResponseDto<string>> AddAdminUser(CreateUserDto createUserDto)
         {
-            throw new NotImplementedException();
+           
+            try
+            {
+                if (!_currentUserInfo.IsCurrentUserAdmin())
+                {
+                    return new ResponseDto<string>("You are not authorized to complete this action", UNAUTHORIZED_OPERATION);
+
+                }
+
+                var (user, isSuccessful, message, code) = await RegisterUser(createUserDto);
+                if (!isSuccessful)
+                {
+                    return new ResponseDto<string>(message, code);
+                }
+                await _userManager.AddToRoleAsync(user, ADMIN_ROLE);
+                return new ResponseDto<string>("User added Successfully");
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occured registering user with id {userId}", createUserDto.Email);
+                return new ResponseDto<string>("An error occurred. Please refresh and try again", INTERNAL_SERVER_ERROR);
+            }
         }
     }
 }

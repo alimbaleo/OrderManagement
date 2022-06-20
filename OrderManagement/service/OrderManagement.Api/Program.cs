@@ -15,6 +15,7 @@ using OrderManagement.Domain.Services;
 using OrderManagement.EntityFramework;
 using OrderManagement.EntityFramework.Identity;
 using System.Text;
+using OrderManagement.Application.Contract.AppUsers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,7 @@ var builder = WebApplication.CreateBuilder(args);
 //AppServices
 builder.Services.AddScoped<IAccountsAppService, AccountsAppService>();
 builder.Services.AddScoped<IOrdersAppService, OrdersAppService>();
+builder.Services.AddScoped<IAppUsersAppService, AppUsersAppService>();
 builder.Services.AddScoped<ICurrentUserInfo, CurrentUserInfo>();
 
 //Repositories
